@@ -2,61 +2,45 @@ import readline from "node:readline";
 import process from "node:process";
 import FileManager from "./utils/FileManager.js";
 import { EOL } from "node:os";
+import { readdir } from "node:fs/promises";
 
-import { completer } from "./utils/completer.js";
+import { getUsername } from "./app/cli/methods.js";
 
-const RED = "\x1b[91m";
-const GREEN = "\x1b[92m";
-const ORANGE = "\x1b[93m";
-const BLUE = "\x1b[94m";
-const PUR = "\x1b[95m";
-const DEFAULT = "\x1b[39m";
-
-const RED_BG = "\x1b[101m";
-const GREEN_BG = "\x1b[102m";
-const ORANGE_BG = "\x1b[103m";
-const BLUE_BG = "\x1b[104m";
-const PUR_BG = "\x1b[105m";
-const DEFAULT_BG = "\x1b[49m";
-
-const argvUsername = process.argv[2];
-const username = argvUsername?.split("=")[1] || null;
-
-if (username == null) {
-	console.error(`${RED_BG}Incorrect Usage.${DEFAULT_BG}\n${PUR}Usage: npm run start -- --username=your_username${DEFAULT}`);
-	process.exit(1);
-}
+const username = getUsername();
 
 const fm = new FileManager(username);
 
+const COMMANDS = [
+    '.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm',
+    'os', 'hash', 'compress', 'decompress'
+];
 
-
-// function completer(line, callback) {
-//     const parts = line.trim().split(' ');
-//     const cmd = parts[0];
-//     if (parts.length <= 1 && COMMANDS.indexOf(cmd) == -1) {
-//         const hits = COMMANDS.filter((c) => c.startsWith(cmd));
-//         callback(null, [hits, cmd]);
-//         return;
-//     }
-//     const input = parts[1] || ''; 
-//     if (['up', 'ls', '.exit', 'os'].includes(cmd)) {
-//         callback(null, [[], line]);
-//         return;
-//     }
-//     (async () => {
-//         try {
-//             const entries = await readdir(fm.cwd, { withFileTypes: true });
-//             const hits = entries
-//                 .map(entry => entry.name)
-//                 .filter((name) => name.startsWith(input));
+function completer(line, callback) {
+    const parts = line.trim().split(' ');
+    const cmd = parts[0];
+    if (parts.length <= 1 && COMMANDS.indexOf(cmd) == -1) {
+        const hits = COMMANDS.filter((c) => c.startsWith(cmd));
+        callback(null, [hits, cmd]);
+        return;
+    }
+    const input = parts[1] || ''; 
+    if (['up', 'ls', '.exit', 'os'].includes(cmd)) {
+        callback(null, [[], line]);
+        return;
+    }
+    (async () => {
+        try {
+            const entries = await readdir(fm.cwd, { withFileTypes: true });
+            const hits = entries
+                .map(entry => entry.name)
+                .filter((name) => name.startsWith(input));
             
-//             callback(null, [hits, input]);
-//         } catch (e) {
-//             callback(e, [[], line]); 
-//         }
-//     })();
-// }
+            callback(null, [hits, input]);
+        } catch (e) {
+            callback(e, [[], line]); 
+        }
+    })();
+}
 
 const rl = readline.createInterface({
 	input: process.stdin,
