@@ -1,37 +1,44 @@
+import os from "node:os";
+import path from "node:path";
+import { fileURLToPath } from "url";
+
+import { navigationMethods } from "../app/navigation/methods.js";
+import { fsMethods } from "../app/file-system/methods.js";
+
 class FileManager {
-	_username;
-	_exit;
-	_input;
+	username;
+	input;
+	cwd;
 
 	constructor(username) {
-		this._username = username;
-		this._exit = 0;
-		console.log(`Welcome to the File Manager, ${username}!`);
+		this.username = username;
+		this.cwd = os.homedir();
+		console.log(`Welcome to the File Manager, ${this.username}!`);
 	}
 
-	listen() {
-		console.log(`\nType '.exit' or press 'Ctrl+C' to quit.\n`);
-		process.stdin.setEncoding('utf-8');
-
-		process.stdin.on('data', (input) => {
-			if (input ===  '\u0003' || input.trim() === '.exit') {
-				console.log(`\nThank you for using File Manager, ${this._username}, goodbye!\n`);
-				process.exit(0);
-			} else if (input == '\u0004') {
-
-			} else {
-				console.log(`You typed: ${input}`);
-			}
-		});
-
-		process.stdin._write('');
-
-		process.on('SIGTERM', () => console.log('Termination signal'));
-		process.on('SIGHUP', () => console.log('Terminal closed'));
+	_resolvePath(userPath) {
+		return path.resolve(this.cwd, userPath);
 	}
-	
 
+	_getCWD() {
+		return path.parse(this.cwd);
+	}
+
+	_getRoot() {
+		return path.parse(this.cwd).root;
+	}
+
+	printCWD() {
+		console.log(`You are currently in ${this.cwd}`);
+	}
+
+	exit(exitStatus) {
+		console.log(`\nThank you for using File Manager, ${this.username}, goodbye!\n`);
+		process.exit(exitStatus || 0);
+	}
 
 }
+
+Object.assign(FileManager.prototype, navigationMethods, fsMethods);
 
 export default FileManager;
