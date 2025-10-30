@@ -40,6 +40,8 @@ npm run start -- --username=your_username
 
  - rm path/to/file: Delete a file.
 
+---
+
 ### Directory Operations
 
  - mkdir new_dir_name: Create a new directory.
