@@ -8,8 +8,6 @@ const PUR = "\x1b[95m";
 const DEFAULT = "\x1b[39m";
 
 const RED_BG = "\x1b[101m";
-const GREEN_BG = "\x1b[102m";
-const ORANGE_BG = "\x1b[103m";
 const BLUE_BG = "\x1b[104m";
 const PUR_BG = "\x1b[105m";
 const DEFAULT_BG = "\x1b[49m";

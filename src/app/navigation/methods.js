@@ -1,4 +1,5 @@
 import {readdir, stat } from "node:fs/promises";
+import { perror } from "../../utils/formError.js";
 
 export const navigationMethods = {
 	async up() {
@@ -8,16 +9,18 @@ export const navigationMethods = {
 		}
 	},
 	async cd(userPath) {
-        if (!userPath) throw new Error('Invalid input');
-        
-        const targetPath = this._resolvePath(userPath);
-        
-        const stats = await stat(targetPath);
-        if (!stats.isDirectory()) {
-            throw new Error('Operation failed: Not a directory');
+        try {
+            if (!userPath) throw new Error('cd: Invalid input');
+            const targetPath = this._resolvePath(userPath);
+            const stats = await stat(targetPath);
+            if (!stats.isDirectory()) {
+                throw new Error(`cd: ${GREEN}${targer}${DEFAULT}: Is not a directory`);
+            }
+            this.cwd = targetPath;
+        } catch (error) {
+            perror(error, 'cd');
         }
         
-        this.cwd = targetPath;
     },
 	async ls() {
         const entries = await readdir(this.cwd, { withFileTypes: true });

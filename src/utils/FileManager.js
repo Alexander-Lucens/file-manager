@@ -1,9 +1,16 @@
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "url";
+
+const GREEN = "\x1b[92m";
+const ORANGE = "\x1b[93m";
+const BLUE = "\x1b[94m";
+const PUR = "\x1b[95m";
+const DEFAULT = "\x1b[39m";
 
 import { navigationMethods } from "../app/navigation/methods.js";
 import { fsMethods } from "../app/file-system/methods.js";
+import { osMethods } from "../app/os-info/methods.js";
+import { hashMethods } from "../app/hash/methods.js";
 
 class FileManager {
 	username;
@@ -13,7 +20,7 @@ class FileManager {
 	constructor(username) {
 		this.username = username;
 		this.cwd = os.homedir();
-		console.log(`Welcome to the File Manager, ${this.username}!`);
+		console.log(`Welcome to the File Manager, ${BLUE}${this.username}${DEFAULT}!`);
 	}
 
 	_resolvePath(userPath) {
@@ -29,16 +36,21 @@ class FileManager {
 	}
 
 	printCWD() {
-		console.log(`You are currently in ${this.cwd}`);
+		console.log(`You are currently in ${GREEN}${this.cwd}${DEFAULT}`);
 	}
 
 	exit(exitStatus) {
-		console.log(`\nThank you for using File Manager, ${this.username}, goodbye!\n`);
+		console.log(`\nThank you for using File Manager, ${BLUE}${this.username}${DEFAULT}, goodbye!`);
 		process.exit(exitStatus || 0);
 	}
 
 }
 
-Object.assign(FileManager.prototype, navigationMethods, fsMethods);
+Object.assign(FileManager.prototype, 
+	navigationMethods, 
+	fsMethods,
+	osMethods,
+	hashMethods
+);
 
 export default FileManager;

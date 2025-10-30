@@ -1,7 +1,6 @@
 import readline from "node:readline";
 import process from "node:process";
 import FileManager from "./utils/FileManager.js";
-import { EOL } from "node:os";
 import { readdir } from "node:fs/promises";
 
 import { getUsername } from "./app/cli/methods.js";
@@ -15,19 +14,30 @@ const COMMANDS = [
     'os', 'hash', 'compress', 'decompress'
 ];
 
+const OSMETHODS = [ '--EOL', 
+					'--cpus', 
+					'--homedir', 
+					'--username', 
+					'--architecture'];
+
 function completer(line, callback) {
     const parts = line.trim().split(' ');
     const cmd = parts[0];
-    if (parts.length <= 1 && COMMANDS.indexOf(cmd) == -1) {
+    if (parts.length <= 1 && !COMMANDS.includes(cmd)) {
         const hits = COMMANDS.filter((c) => c.startsWith(cmd));
         callback(null, [hits, cmd]);
         return;
     }
     const input = parts[1] || ''; 
-    if (['up', 'ls', '.exit', 'os'].includes(cmd)) {
+    if (['up', 'ls', '.exit'].includes(cmd)) {
         callback(null, [[], line]);
         return;
     }
+	if (cmd === 'os') {
+		const hits = OSMETHODS.filter((c) => c.startsWith(input))
+		callback(null, [hits, input]);
+		return;
+	}
     (async () => {
         try {
             const entries = await readdir(fm.cwd, { withFileTypes: true });
