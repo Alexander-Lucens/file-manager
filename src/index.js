@@ -3,6 +3,9 @@ import process from "node:process";
 import FileManager from "./utils/FileManager.js";
 import { readdir } from "node:fs/promises";
 
+const ORANGE = "\x1b[93m";
+const DEFAULT = "\x1b[39m";
+
 import { getUsername } from "./app/cli/methods.js";
 
 const username = getUsername();
@@ -55,7 +58,7 @@ function completer(line, callback) {
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
-	prompt: "$> ",
+	prompt: `${ORANGE}$> ${DEFAULT}`,
 	completer: completer
 });
 

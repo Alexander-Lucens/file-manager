@@ -2,10 +2,10 @@
   "name": "file-manager",
   "version": "1.0.0",
   "description": "",
-  "main": "index.mjs",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.mjs"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",

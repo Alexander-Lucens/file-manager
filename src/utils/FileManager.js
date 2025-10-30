@@ -11,6 +11,7 @@ import { navigationMethods } from "../app/navigation/methods.js";
 import { fsMethods } from "../app/file-system/methods.js";
 import { osMethods } from "../app/os-info/methods.js";
 import { hashMethods } from "../app/hash/methods.js";
+import { compressMethods } from "../app/compression/methods.js";
 
 class FileManager {
 	username;
@@ -50,7 +51,8 @@ Object.assign(FileManager.prototype,
 	navigationMethods, 
 	fsMethods,
 	osMethods,
-	hashMethods
+	hashMethods,
+	compressMethods
 );
 
 export default FileManager;
