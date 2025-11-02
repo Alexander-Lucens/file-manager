@@ -4,8 +4,17 @@ const ORANGE_BG = "\x1b[103m";
 const GREEN_BG = "\x1b[102m";
 const DEFAULT_BG = "\x1b[49m";
 
+const GREEN = "\x1b[92m";
+const BLUE = "\x1b[94m";
+const PUR = "\x1b[95m";
+const DEFAULT = "\x1b[39m";
+
+const CPATH = (path) => `${GREEN}${path}${DEFAULT}`;
+const CNAME = (name) => `${BLUE}${name}${DEFAULT}`;
+const ARCH = (text) => `${PUR}${text}${DEFAULT}`;
+
 function getEOL() {
-	console.log(JSON.stringify(EOL));
+	console.log(`EOL: ${ARCH(JSON.stringify(EOL))}`);
 }
 
 function getCPU() {
@@ -18,15 +27,15 @@ function getCPU() {
 }
 
 function getHomedir() {
-	console.log(homedir());
+	console.log(`Home dirrectory: ${CPATH(homedir())}`);
 }
 
 function getUsername() {
-	console.log(userInfo().username);
+	console.log(`Username: ${CNAME(userInfo().username)}`);
 }
 
 function getArchitecture() {
-	console.log(arch());
+	console.log(`Architecture: ${ARCH(arch())}`);
 }
 
 const osHandlers = new Map([
@@ -37,15 +46,16 @@ const osHandlers = new Map([
 	['--architecture', getArchitecture ]
 ]);
 
-
+/**
+ * Here just check in map is second argument in os is one from 
+ * list and execute it if all fine otherwise throw and Invalid input Error
+ */
 export const osMethods = {
 	async os(arg) {
 		const handler = osHandlers.get(arg);
-
 		if (!arg || !handler) {
 			throw new Error('Invalid input');
 		}
-		
 		handler();
 	}
 };

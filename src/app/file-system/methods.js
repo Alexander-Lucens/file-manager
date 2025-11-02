@@ -7,18 +7,16 @@ import path from "node:path";
 
 
 const GREEN = "\x1b[92m";
-const ORANGE = "\x1b[93m";
-const BLUE = "\x1b[94m";
-const PUR = "\x1b[95m";
 const DEFAULT = "\x1b[39m";
+const CPATH = (path) => `${GREEN}${path}${DEFAULT}`;
 
 export const fsMethods = {
-	async cat(targer) {
+	async cat(target) {
 		try {
-			if (!targer) throw new Error('cat: Invalid input');
-			const targetPath = this._resolvePath(targer);
+			if (!target) throw new Error('cat: Invalid input');
+			const targetPath = this._resolvePath(target);
 			const access = await stat(targetPath);
-			if (access.isDirectory()) throw new Error(`cat: ${GREEN}${targer}${DEFAULT}: Is a directory`);
+			if (access.isDirectory()) throw new Error(`cat: ${CPATH(target)}: Is a directory`);
 			const read = fs.createReadStream(targetPath, { encoding: 'utf-8'});
 			await pipeline(read, process.stdout, { end: false });
 		} catch(error) {
@@ -30,7 +28,7 @@ export const fsMethods = {
 			if (!target) throw new Error('add: Invalid input');
 			const targetPath = this._resolvePath(target);
 			await writeFile(targetPath, '', { flag: "wx" });
-			console.log(`File ${GREEN}${target}${DEFAULT} created!`);
+			console.log(`File ${CPATH(target)} created!`);
 		} catch(error) {
 			perror(error, 'add');
 		}
@@ -39,8 +37,8 @@ export const fsMethods = {
 		try {
 			if (!target) throw new Error('mkdir: Invalid input');
 			const targetPath = this._resolvePath(target);
-			await mkdir(targetPath, { flag: "wx" });
-			console.log(`Directory ${GREEN}${target}${DEFAULT} created!`);
+			await mkdir(targetPath);
+			console.log(`Directory ${CPATH(target)} created!`);
 		} catch(error) {
 			perror(error, 'mkdir');
 		}
@@ -50,9 +48,9 @@ export const fsMethods = {
 			if (!target) throw new Error('rm: Invalid input');
 			const targetPath = this._resolvePath(target);
 			const access = await stat(targetPath);
-			if (access.isDirectory()) throw new Error(`rm: ${GREEN}${target}${DEFAULT}: Is a directory`);
+			if (access.isDirectory()) throw new Error(`rm: ${CPATH(target)}: Is a directory`);
 			await rm(targetPath, { force: true });
-			console.log(`File ${GREEN}${target}${DEFAULT} deleted!`);
+			console.log(`File ${CPATH(target)} deleted!`);
 		} catch(error) {
 			perror(error, 'rm');
 		}
@@ -62,9 +60,9 @@ export const fsMethods = {
 			if (!target) throw new Error('rmdir: Invalid input');
 			const targetPath = this._resolvePath(target);
 			const access = await stat(targetPath);
-			if (!access.isDirectory()) throw new Error(`rmdir: ${GREEN}${target}${DEFAULT}: Is not a directory`);
-			await rmdir(targetPath, { recursive: true, force: true });
-			console.log(`Directory ${GREEN}${target}${DEFAULT} deleted!`);
+			if (!access.isDirectory()) throw new Error(`rmdir: ${CPATH(target)}: Is not a directory`);
+			await rm(targetPath, { recursive: true, force: true });
+			console.log(`Directory ${CPATH(target)} deleted!`);
 		} catch(error) {
 			perror(error, 'rmdir');
 		}
@@ -74,10 +72,10 @@ export const fsMethods = {
 			if (!target || !newName) throw new Error('rn: Invalid input');
 			const targetPath = this._resolvePath(target);
 			const access = await stat(targetPath);
-			if (access.isDirectory()) throw new Error(`rn: ${GREEN}${target}${DEFAULT}: Is a directory`);
+			if (access.isDirectory()) throw new Error(`rn: ${CPATH(target)}: Is a directory`);
 			const newTargetPath = this._resolvePath(newName);
 			await rename(targetPath, newTargetPath);
-			console.log(`File name ${GREEN}${target}${DEFAULT} changed!`);
+			console.log(`File name ${CPATH(target)} changed!`);
 		} catch(error) {
 			perror(error, 'rn');
 		}
@@ -102,7 +100,7 @@ export const fsMethods = {
 			const readStream = createReadStream(sourcePath);
 			const writeStream = createWriteStream(destPath);
 			await pipeline(readStream, writeStream);
-			console.log(`Created copy of ${GREEN}${source}${DEFAULT} in ${GREEN}${target}${DEFAULT}!`);
+			console.log(`Created copy of ${GREEN}${source}${DEFAULT} in ${CPATH(target)}!`);
 		} catch(error) {
 			perror(error, 'cp');
 		}
@@ -128,7 +126,7 @@ export const fsMethods = {
 			const writeStream = createWriteStream(destPath);
 			await pipeline(readStream, writeStream);
 			await rm(sourcePath, { force: true });
-			console.log(`Moved ${GREEN}${source}${DEFAULT} in ${GREEN}${target}${DEFAULT}!`);
+			console.log(`Moved ${GREEN}${source}${DEFAULT} in ${CPATH(target)}!`);
 		} catch(error) {
 			perror(error, 'mv');
 		}

@@ -7,6 +7,7 @@ import path from "node:path";
 
 const GREEN = "\x1b[92m";
 const DEFAULT = "\x1b[39m";
+const CPATH = (path) => `${GREEN}${path}${DEFAULT}`;
 
 export const compressMethods = {
 	async compress(pathToFile, pathToDestination) {
@@ -23,7 +24,8 @@ export const compressMethods = {
             const brotli = createBrotliCompress();
             const destination = createWriteStream(destPath);
             await pipeline(source, brotli, destination);
-			console.log(`Compress file ${GREEN}${pathToFile}${DEFAULT} to ${GREEN}${path.join(pathToDestination, path.basename(destPath))}${DEFAULT}!`);
+            const pathTo = path.join(pathToDestination, path.basename(destPath));
+			console.log(`Compress file ${CPATH(pathToFile)} to ${CPATH(pathTo)}!`);
         } catch (error) {
             perror(error, 'compress');
         }
@@ -42,7 +44,8 @@ export const compressMethods = {
             const brotli = createBrotliDecompress();
             const destination = createWriteStream(destPath);
             await pipeline(source, brotli, destination);
-			console.log(`Decompress file ${GREEN}${pathToFile}${DEFAULT} to ${GREEN}${path.join(pathToDestination , path.basename(destPath))}${DEFAULT}!`);
+			const pathTo = path.join(pathToDestination, path.basename(destPath));
+			console.log(`Decompress file ${CPATH(pathToFile)} to ${CPATH(pathTo)}!`);
         } catch (error) {
             perror(error, 'decompress');
         }

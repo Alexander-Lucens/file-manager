@@ -14,7 +14,7 @@ const fm = new FileManager(username);
 
 const COMMANDS = [
     '.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm',
-    'os', 'hash', 'compress', 'decompress'
+    'rmdir', 'os', 'hash', 'compress', 'decompress'
 ];
 
 const OSMETHODS = [ '--EOL', 

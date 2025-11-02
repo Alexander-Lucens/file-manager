@@ -1,6 +1,10 @@
 import {readdir, stat } from "node:fs/promises";
 import { perror } from "../../utils/formError.js";
 
+const GREEN = "\x1b[92m";
+const DEFAULT = "\x1b[39m";
+const CPATH = (path) => `${GREEN}${path}${DEFAULT}`;
+
 export const navigationMethods = {
 	async up() {
 		const parentDir = this._resolvePath('..');
@@ -14,7 +18,7 @@ export const navigationMethods = {
             const targetPath = this._resolvePath(userPath);
             const stats = await stat(targetPath);
             if (!stats.isDirectory()) {
-                throw new Error(`cd: ${GREEN}${targer}${DEFAULT}: Is not a directory`);
+                throw new Error(`cd: ${CPATH(targer)}: Is not a directory`);
             }
             this.cwd = targetPath;
         } catch (error) {

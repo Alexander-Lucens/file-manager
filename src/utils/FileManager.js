@@ -7,6 +7,9 @@ const BLUE = "\x1b[94m";
 const PUR = "\x1b[95m";
 const DEFAULT = "\x1b[39m";
 
+const CPATH = (path) => `${GREEN}${path}${DEFAULT}`;
+const CNAME = (name) => `${BLUE}${name}${DEFAULT}`;
+
 import { navigationMethods } from "../app/navigation/methods.js";
 import { fsMethods } from "../app/file-system/methods.js";
 import { osMethods } from "../app/os-info/methods.js";
@@ -21,7 +24,7 @@ class FileManager {
 	constructor(username) {
 		this.username = username;
 		this.cwd = os.homedir();
-		console.log(`Welcome to the File Manager, ${BLUE}${this.username}${DEFAULT}!`);
+		console.log(`Welcome to the File Manager, ${CNAME(this.username)}!`);
 	}
 
 	_resolvePath(userPath) {
@@ -37,11 +40,11 @@ class FileManager {
 	}
 
 	printCWD() {
-		console.log(`You are currently in ${GREEN}${this.cwd}${DEFAULT}`);
+		console.log(`You are currently in ${CPATH(this.cwd)}`);
 	}
 
 	exit(exitStatus) {
-		console.log(`\nThank you for using File Manager, ${BLUE}${this.username}${DEFAULT}, goodbye!`);
+		console.log(`\nThank you for using File Manager, ${CNAME(this.username)}, goodbye!`);
 		process.exit(exitStatus || 0);
 	}
 
